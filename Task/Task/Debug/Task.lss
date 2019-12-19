@@ -1,33 +1,33 @@
 
-Practice.elf:     file format elf32-avr
+Task.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800200  00800200  00000274  2**0
+  0 .data         00000000  00800200  00800200  00000292  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000200  00000000  00000000  00000074  2**1
+  1 .text         0000021e  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000008  00800200  00800200  00000274  2**0
+  2 .bss          00000008  00800200  00800200  00000292  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000274  2**0
+  3 .comment      00000030  00000000  00000000  00000292  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002a4  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002c4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000048  00000000  00000000  000002e4  2**0
+  5 .debug_aranges 00000048  00000000  00000000  00000304  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000d71  00000000  00000000  0000032c  2**0
+  6 .debug_info   00000d65  00000000  00000000  0000034c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000c06  00000000  00000000  0000109d  2**0
+  7 .debug_abbrev 00000bd6  00000000  00000000  000010b1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000003f1  00000000  00000000  00001ca3  2**0
+  8 .debug_line   000003fb  00000000  00000000  00001c87  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000084  00000000  00000000  00002094  2**2
+  9 .debug_frame  00000084  00000000  00000000  00002084  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000572  00000000  00000000  00002118  2**0
+ 10 .debug_str    0000056a  00000000  00000000  00002108  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000003c  00000000  00000000  0000268a  2**0
+ 11 .debug_loc    0000003c  00000000  00000000  00002672  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000038  00000000  00000000  000026c6  2**0
+ 12 .debug_ranges 00000038  00000000  00000000  000026ae  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -171,43 +171,47 @@ Disassembly of section .text:
   fe:	a8 30       	cpi	r26, 0x08	; 8
  100:	b2 07       	cpc	r27, r18
  102:	e1 f7       	brne	.-8      	; 0xfc <.do_clear_bss_loop>
- 104:	60 d0       	rcall	.+192    	; 0x1c6 <main>
- 106:	7a c0       	rjmp	.+244    	; 0x1fc <_exit>
+ 104:	70 d0       	rcall	.+224    	; 0x1e6 <main>
+ 106:	89 c0       	rjmp	.+274    	; 0x21a <_exit>
 
 00000108 <__bad_interrupt>:
  108:	7b cf       	rjmp	.-266    	; 0x0 <__vectors>
 
 0000010a <__vector_21>:
-	if(tsk3m !=0) time1 >>=2; //Si el boton esta precionado 
-	led = led^0x20; //
-	PORTB = led;
-}
-void task2(void){
-	if(tsk2c =0){
+//FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+
+/*Interrupt Service Routine
+which flag this function*/
+ISR(TIMER0_COMPA_vect)
+begin
  10a:	1f 92       	push	r1
  10c:	0f 92       	push	r0
  10e:	0f b6       	in	r0, 0x3f	; 63
  110:	0f 92       	push	r0
  112:	11 24       	eor	r1, r1
  114:	8f 93       	push	r24
+	if(time1 > 0)  --time1;//if time1 mayor que 0 decremento time1
  116:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
  11a:	88 23       	and	r24, r24
  11c:	29 f0       	breq	.+10     	; 0x128 <__vector_21+0x1e>
  11e:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
  122:	81 50       	subi	r24, 0x01	; 1
  124:	80 93 02 02 	sts	0x0202, r24	; 0x800202 <time1>
+	if(time2 > 0)  --time2;
  128:	80 91 07 02 	lds	r24, 0x0207	; 0x800207 <time2>
  12c:	88 23       	and	r24, r24
  12e:	29 f0       	breq	.+10     	; 0x13a <__vector_21+0x30>
  130:	80 91 07 02 	lds	r24, 0x0207	; 0x800207 <time2>
  134:	81 50       	subi	r24, 0x01	; 1
  136:	80 93 07 02 	sts	0x0207, r24	; 0x800207 <time2>
+	if(time3 > 0)  --time3;
  13a:	80 91 06 02 	lds	r24, 0x0206	; 0x800206 <time3>
  13e:	88 23       	and	r24, r24
  140:	29 f0       	breq	.+10     	; 0x14c <__vector_21+0x42>
  142:	80 91 06 02 	lds	r24, 0x0206	; 0x800206 <time3>
  146:	81 50       	subi	r24, 0x01	; 1
  148:	80 93 06 02 	sts	0x0206, r24	; 0x800206 <time3>
+end
  14c:	8f 91       	pop	r24
  14e:	0f 90       	pop	r0
  150:	0f be       	out	0x3f, r0	; 63
@@ -216,110 +220,167 @@ void task2(void){
  156:	18 95       	reti
 
 00000158 <initialize>:
- 158:	80 ef       	ldi	r24, 0xF0	; 240
+
+//funciones
+void initialize(void)
+begin
+	//correction: if you do not declare a register in DDRx by default it is an input
+	DDRB = 0x07;//going to use portb.0, portb.1 and portb.2 as outputs: 2 for led1 and led2 
+ 158:	87 e0       	ldi	r24, 0x07	; 7
  15a:	84 b9       	out	0x04, r24	; 4
- 15c:	8f e0       	ldi	r24, 0x0F	; 15
- 15e:	85 b9       	out	0x05, r24	; 5
- 160:	82 e0       	ldi	r24, 0x02	; 2
- 162:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x70006e>
- 166:	99 ef       	ldi	r25, 0xF9	; 249
- 168:	97 bd       	out	0x27, r25	; 39
- 16a:	84 bd       	out	0x24, r24	; 36
- 16c:	85 e0       	ldi	r24, 0x05	; 5
- 16e:	85 bd       	out	0x25, r24	; 37
- 170:	8f ef       	ldi	r24, 0xFF	; 255
- 172:	80 93 01 02 	sts	0x0201, r24	; 0x800201 <led>
- 176:	8a ef       	ldi	r24, 0xFA	; 250
- 178:	80 93 02 02 	sts	0x0202, r24	; 0x800202 <time1>
- 17c:	8d e7       	ldi	r24, 0x7D	; 125
- 17e:	80 93 07 02 	sts	0x0207, r24	; 0x800207 <time2>
- 182:	8c e3       	ldi	r24, 0x3C	; 60
- 184:	80 93 06 02 	sts	0x0206, r24	; 0x800206 <time3>
- 188:	10 92 05 02 	sts	0x0205, r1	; 0x800205 <tsk3m>
- 18c:	84 e0       	ldi	r24, 0x04	; 4
- 18e:	80 93 00 02 	sts	0x0200, r24	; 0x800200 <__DATA_REGION_ORIGIN__>
- 192:	78 94       	sei
- 194:	08 95       	ret
+				//and one for a led indicator(power ON indicator)
+				//all the other pins act as inputs
+	PORTB = 0x07; //power off 3 leds, WHY??????? 
+ 15c:	85 b9       	out	0x05, r24	; 5
+	//DDRD = 0x02; //bit 2 de portD como salida, porque ese pin es el de Tx
+				 // otra manera de escribir DDRD = (1<<PORTD1)
+	
+	/*4 pasos para inicializar el timer*/
+	TIMSK0=(1<<OCIE0A);//necesitamos setear el "Output Compare Interrupt Enable timer0 channel A"
+ 15e:	82 e0       	ldi	r24, 0x02	; 2
+ 160:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x70006e>
+	OCR0A = 249;//compare register, recordemos que es un sistema basado en 0,
+ 164:	99 ef       	ldi	r25, 0xF9	; 249
+ 166:	97 bd       	out	0x27, r25	; 39
+				//y queremos 77 conteos para hacer un milisegundo
+	TCCR0A=(1<<WGM01);//activa Clear on Compare Match function
+ 168:	84 bd       	out	0x24, r24	; 36
+	TCCR0B=3;//0b00000100
+ 16a:	83 e0       	ldi	r24, 0x03	; 3
+ 16c:	85 bd       	out	0x25, r24	; 37
+			 //activo el prescaler dividido para 64
+	
+	//inicialiozamos las variables
+	led = 0xff;
+ 16e:	8f ef       	ldi	r24, 0xFF	; 255
+ 170:	80 93 01 02 	sts	0x0201, r24	; 0x800201 <led>
+	time1=t1;
+ 174:	8a ef       	ldi	r24, 0xFA	; 250
+ 176:	80 93 02 02 	sts	0x0202, r24	; 0x800202 <time1>
+	time2=t2;
+ 17a:	8d e7       	ldi	r24, 0x7D	; 125
+ 17c:	80 93 07 02 	sts	0x0207, r24	; 0x800207 <time2>
+	time3=t3;
+ 180:	8c e3       	ldi	r24, 0x3C	; 60
+ 182:	80 93 06 02 	sts	0x0206, r24	; 0x800206 <time3>
+	tsk2c=4;//task 2 count
+ 186:	84 e0       	ldi	r24, 0x04	; 4
+ 188:	80 93 00 02 	sts	0x0200, r24	; 0x800200 <__DATA_REGION_ORIGIN__>
+	tsk3m=0;//task 3 messsage
+ 18c:	10 92 05 02 	sts	0x0205, r1	; 0x800205 <tsk3m>
+	uart_init();
+	stdout = stdin = stderr = &uart_str;
+	fprintf(stdout,"\n\rIniciando...\n\r");
+	*/
+	
+	sei();//set interrupt enable, if you do not put this line the timer will be do "NOTHING!!!!"
+ 190:	78 94       	sei
+ 192:	08 95       	ret
 
-00000196 <task1>:
- 196:	80 91 05 02 	lds	r24, 0x0205	; 0x800205 <tsk3m>
- 19a:	88 23       	and	r24, r24
- 19c:	31 f0       	breq	.+12     	; 0x1aa <task1+0x14>
- 19e:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
+00000194 <task1>:
+	
+end  //end initialize
+
+void task1(void)
+begin
+	if (tsk3m != 0) time1>>=2;//time1 shift by 2 bits(divide by 4) and we go from 2Hz to 8Hz
+ 194:	80 91 05 02 	lds	r24, 0x0205	; 0x800205 <tsk3m>
+ 198:	88 23       	and	r24, r24
+ 19a:	31 f0       	breq	.+12     	; 0x1a8 <task1+0x14>
+ 19c:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
+ 1a0:	86 95       	lsr	r24
  1a2:	86 95       	lsr	r24
- 1a4:	86 95       	lsr	r24
- 1a6:	80 93 02 02 	sts	0x0202, r24	; 0x800202 <time1>
- 1aa:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <led>
- 1ae:	80 e2       	ldi	r24, 0x20	; 32
- 1b0:	89 27       	eor	r24, r25
- 1b2:	80 93 01 02 	sts	0x0201, r24	; 0x800201 <led>
- 1b6:	85 b9       	out	0x05, r24	; 5
- 1b8:	08 95       	ret
+ 1a4:	80 93 02 02 	sts	0x0202, r24	; 0x800202 <time1>
+	led = led^0x02;//bit 1
+ 1a8:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <led>
+ 1ac:	82 e0       	ldi	r24, 0x02	; 2
+ 1ae:	89 27       	eor	r24, r25
+ 1b0:	80 93 01 02 	sts	0x0201, r24	; 0x800201 <led>
+	PORTB=led;
+ 1b4:	85 b9       	out	0x05, r24	; 5
+ 1b6:	08 95       	ret
 
-000001ba <task3>:
-		led=led^0x80;
-		PORTB=led;
-	}
-}
-void task3(void){
-	tsk3m=~PINB & 0x80; //~Negación
- 1ba:	83 b1       	in	r24, 0x03	; 3
- 1bc:	80 95       	com	r24
- 1be:	80 78       	andi	r24, 0x80	; 128
- 1c0:	80 93 05 02 	sts	0x0205, r24	; 0x800205 <tsk3m>
+000001b8 <task2>:
+									 //++time incrementa luego muestra
+end
+
+void task2(void)
+begin
+	if (--tsk2c == 0)
+ 1b8:	80 91 00 02 	lds	r24, 0x0200	; 0x800200 <__DATA_REGION_ORIGIN__>
+ 1bc:	81 50       	subi	r24, 0x01	; 1
+ 1be:	19 f0       	breq	.+6      	; 0x1c6 <task2+0xe>
+ 1c0:	80 93 00 02 	sts	0x0200, r24	; 0x800200 <__DATA_REGION_ORIGIN__>
  1c4:	08 95       	ret
+	begin
+		tsk2c=4;
+ 1c6:	84 e0       	ldi	r24, 0x04	; 4
+ 1c8:	80 93 00 02 	sts	0x0200, r24	; 0x800200 <__DATA_REGION_ORIGIN__>
+		led=led^0x04;//bit 2
+ 1cc:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <led>
+ 1d0:	89 27       	eor	r24, r25
+ 1d2:	80 93 01 02 	sts	0x0201, r24	; 0x800201 <led>
+		PORTB=led;
+ 1d6:	85 b9       	out	0x05, r24	; 5
+ 1d8:	08 95       	ret
 
-000001c6 <main>:
-}
+000001da <task3>:
+	end
+end
+
+void task3(void)
+begin
+	tsk3m=~PINB & 0x40; //wait for push on PortbB.6, push on ground, detecting only PB6
+ 1da:	83 b1       	in	r24, 0x03	; 3
+ 1dc:	80 95       	com	r24
+ 1de:	80 74       	andi	r24, 0x40	; 64
+ 1e0:	80 93 05 02 	sts	0x0205, r24	; 0x800205 <tsk3m>
+ 1e4:	08 95       	ret
+
+000001e6 <main>:
+warnings "conflicting types for..." */
+
+//programa principal
 int main(void)
-{
-    initialize();
- 1c6:	c8 df       	rcall	.-112    	; 0x158 <initialize>
-    while (1) { //Mientras en microcontrolador este funcionando
-		if(time1==0){time1=t1; task1();}
- 1c8:	da ef       	ldi	r29, 0xFA	; 250
-		if(0==time2){time2=t2; task2();}
- 1ca:	cd e7       	ldi	r28, 0x7D	; 125
-		if(0==time3){time3=t3; task3();}
- 1cc:	1c e3       	ldi	r17, 0x3C	; 60
-}
-int main(void)
-{
-    initialize();
-    while (1) { //Mientras en microcontrolador este funcionando
-		if(time1==0){time1=t1; task1();}
- 1ce:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
- 1d2:	81 11       	cpse	r24, r1
- 1d4:	03 c0       	rjmp	.+6      	; 0x1dc <main+0x16>
- 1d6:	d0 93 02 02 	sts	0x0202, r29	; 0x800202 <time1>
- 1da:	dd df       	rcall	.-70     	; 0x196 <task1>
-		if(0==time2){time2=t2; task2();}
- 1dc:	80 91 07 02 	lds	r24, 0x0207	; 0x800207 <time2>
- 1e0:	81 11       	cpse	r24, r1
- 1e2:	04 c0       	rjmp	.+8      	; 0x1ec <main+0x26>
- 1e4:	c0 93 07 02 	sts	0x0207, r28	; 0x800207 <time2>
-	if(tsk3m !=0) time1 >>=2; //Si el boton esta precionado 
-	led = led^0x20; //
-	PORTB = led;
-}
-void task2(void){
-	if(tsk2c =0){
- 1e8:	10 92 00 02 	sts	0x0200, r1	; 0x800200 <__DATA_REGION_ORIGIN__>
-{
-    initialize();
-    while (1) { //Mientras en microcontrolador este funcionando
-		if(time1==0){time1=t1; task1();}
-		if(0==time2){time2=t2; task2();}
-		if(0==time3){time3=t3; task3();}
- 1ec:	80 91 06 02 	lds	r24, 0x0206	; 0x800206 <time3>
- 1f0:	81 11       	cpse	r24, r1
- 1f2:	ed cf       	rjmp	.-38     	; 0x1ce <main+0x8>
- 1f4:	10 93 06 02 	sts	0x0206, r17	; 0x800206 <time3>
- 1f8:	e0 df       	rcall	.-64     	; 0x1ba <task3>
- 1fa:	e9 cf       	rjmp	.-46     	; 0x1ce <main+0x8>
+begin
+	initialize();//alot of stuffs of low level(hardware setting)
+ 1e6:	b8 df       	rcall	.-144    	; 0x158 <initialize>
+				 //that configure i/o ports, timers, and others
+	
+	while(1) begin 
+		if (time1==0){time1=t1;task1();}
+ 1e8:	da ef       	ldi	r29, 0xFA	; 250
+		if (0==time2){time2=t2;task2();}
+ 1ea:	cd e7       	ldi	r28, 0x7D	; 125
+		if (0==time3){time3=t3;task3();}
+ 1ec:	1c e3       	ldi	r17, 0x3C	; 60
+begin
+	initialize();//alot of stuffs of low level(hardware setting)
+				 //that configure i/o ports, timers, and others
+	
+	while(1) begin 
+		if (time1==0){time1=t1;task1();}
+ 1ee:	80 91 02 02 	lds	r24, 0x0202	; 0x800202 <time1>
+ 1f2:	81 11       	cpse	r24, r1
+ 1f4:	03 c0       	rjmp	.+6      	; 0x1fc <main+0x16>
+ 1f6:	d0 93 02 02 	sts	0x0202, r29	; 0x800202 <time1>
+ 1fa:	cc df       	rcall	.-104    	; 0x194 <task1>
+		if (0==time2){time2=t2;task2();}
+ 1fc:	80 91 07 02 	lds	r24, 0x0207	; 0x800207 <time2>
+ 200:	81 11       	cpse	r24, r1
+ 202:	03 c0       	rjmp	.+6      	; 0x20a <main+0x24>
+ 204:	c0 93 07 02 	sts	0x0207, r28	; 0x800207 <time2>
+ 208:	d7 df       	rcall	.-82     	; 0x1b8 <task2>
+		if (0==time3){time3=t3;task3();}
+ 20a:	80 91 06 02 	lds	r24, 0x0206	; 0x800206 <time3>
+ 20e:	81 11       	cpse	r24, r1
+ 210:	ee cf       	rjmp	.-36     	; 0x1ee <main+0x8>
+ 212:	10 93 06 02 	sts	0x0206, r17	; 0x800206 <time3>
+ 216:	e1 df       	rcall	.-62     	; 0x1da <task3>
+ 218:	ea cf       	rjmp	.-44     	; 0x1ee <main+0x8>
 
-000001fc <_exit>:
- 1fc:	f8 94       	cli
+0000021a <_exit>:
+ 21a:	f8 94       	cli
 
-000001fe <__stop_program>:
- 1fe:	ff cf       	rjmp	.-2      	; 0x1fe <__stop_program>
+0000021c <__stop_program>:
+ 21c:	ff cf       	rjmp	.-2      	; 0x21c <__stop_program>
